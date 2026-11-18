@@ -18,7 +18,7 @@ body { margin: 0; }
 }
 .caption p { margin: 0 0 7px; font-size: .7rem; letter-spacing: .17em; font-weight: 650; }
 h1 { margin: 0; font: normal clamp(2rem, 4vw, 3.2rem) Georgia, serif; }
-.view-mode, .time-mode, nav {
+.view-mode, .time-mode, .layout-mode, nav {
   display: flex;
   gap: 7px;
   border-radius: 16px;
@@ -42,7 +42,9 @@ nav {
   z-index: 2;
   top: calc(max(0px, env(safe-area-inset-top)) + 25px);
   right: 25px;
+  max-width: 480px;
 }
+.layout-mode { margin-left: auto; }
 button {
   min-height: 44px;
   border: 0;
@@ -78,10 +80,13 @@ button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
     justify-content: flex-start;
     gap: 6px;
   }
-  .view-mode, .time-mode { gap: 3px; padding: 4px; }
+  .view-mode, .time-mode, .layout-mode { gap: 3px; padding: 4px; }
+  .layout-mode { margin-left: 0; }
   .tour-options button { padding: 0 10px; }
 }
 @media (max-width: 440px) {
   .pnlm-zoom-controls { display: none; }
   .pnlm-controls-container { right: 10px; }
+  nav { gap: 3px; padding: 4px; }
+  nav button { padding: 0 9px; font-size: .78rem; }
 }

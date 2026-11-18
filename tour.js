@@ -17,31 +17,38 @@ const rooms = {
   }
 };
 
-const sceneId = (room, mode) => `${room}-${mode}`;
+const sceneId = (room, mode, time) => `${room}-${mode}-${time}`;
 const scenes = {};
 for (const [room, { yaw, pitch, exits }] of Object.entries(rooms)) {
   for (const mode of ['foto', 'model']) {
-    scenes[sceneId(room, mode)] = {
-      yaw,
-      pitch,
-      panorama: `panorama/${room}${mode === 'foto' ? '-fotorealistisch.jpg' : '.jpg'}`,
-      hotSpots: exits.map(({ room: destination, ...hotSpot }) => ({
-        ...hotSpot,
-        type: 'scene',
-        sceneId: sceneId(destination, mode)
-      }))
-    };
+    for (const time of ['dag', 'avond']) {
+      const evening = time === 'avond' ? '-avond' : '';
+      const photo = mode === 'foto' ? '-fotorealistisch' : '';
+      scenes[sceneId(room, mode, time)] = {
+        yaw,
+        pitch,
+        panorama: `panorama/${room}${evening}${photo}.jpg`,
+        hotSpots: exits.map(({ room: destination, ...hotSpot }) => ({
+          ...hotSpot,
+          type: 'scene',
+          sceneId: sceneId(destination, mode, time)
+        }))
+      };
+    }
   }
 }
 
-const roomButtons = document.querySelectorAll('button[data-room]');
-const modeButtons = document.querySelectorAll('button[data-mode]');
+const controls = [
+  ['room', document.querySelectorAll('button[data-room]')],
+  ['mode', document.querySelectorAll('button[data-mode]')],
+  ['time', document.querySelectorAll('button[data-time]')]
+];
 const heading = document.getElementById('room-name');
 const status = document.getElementById('loading');
 
 const viewer = pannellum.viewer('panorama', {
   default: {
-    firstScene: sceneId('woonkamer', 'foto'),
+    firstScene: sceneId('woonkamer', 'foto', 'dag'),
     type: 'equirectangular',
     autoLoad: true,
     sceneFadeDuration: 320,
@@ -61,14 +68,18 @@ const viewer = pannellum.viewer('panorama', {
   scenes
 });
 
+function sceneState(id) {
+  const [room, mode, time] = id.split('-');
+  return { room, mode, time };
+}
+
 viewer.on('scenechange', (id) => {
-  const [room, mode] = id.split('-');
-  heading.textContent = rooms[room].title;
-  for (const button of roomButtons) {
-    button.setAttribute('aria-pressed', String(button.dataset.room === room));
-  }
-  for (const button of modeButtons) {
-    button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
+  const state = sceneState(id);
+  heading.textContent = rooms[state.room].title;
+  for (const [field, buttons] of controls) {
+    for (const button of buttons) {
+      button.setAttribute('aria-pressed', String(button.dataset[field] === state[field]));
+    }
   }
 });
 
@@ -79,17 +90,19 @@ viewer.on('error', () => {
   status.textContent = 'Het panorama kon niet worden geladen.';
   status.hidden = false;
 });
-for (const button of roomButtons) {
-  button.addEventListener('click', () => {
-    const [room, mode] = viewer.getScene().split('-');
-    if (button.dataset.room !== room) viewer.loadScene(sceneId(button.dataset.room, mode));
-  });
-}
-for (const button of modeButtons) {
-  button.addEventListener('click', () => {
-    const [room, mode] = viewer.getScene().split('-');
-    if (button.dataset.mode !== mode) {
-      viewer.loadScene(sceneId(room, button.dataset.mode), viewer.getPitch(), viewer.getYaw(), viewer.getHfov());
-    }
-  });
+for (const [field, buttons] of controls) {
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const state = sceneState(viewer.getScene());
+      const value = button.dataset[field];
+      if (state[field] === value) return;
+      state[field] = value;
+      const destination = sceneId(state.room, state.mode, state.time);
+      if (field === 'room') {
+        viewer.loadScene(destination);
+      } else {
+        viewer.loadScene(destination, viewer.getPitch(), viewer.getYaw(), viewer.getHfov());
+      }
+    });
+  }
 }

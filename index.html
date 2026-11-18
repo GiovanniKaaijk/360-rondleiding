@@ -6,9 +6,9 @@
   <meta name="description" content="360°-proefrondleiding door de woonkamer en keuken van Akkerheer.">
   <title>Akkerheer | 360°-rondleiding</title>
   <link rel="stylesheet" href="vendor/pannellum.css">
-  <link rel="stylesheet" href="tour.css">
+  <link rel="stylesheet" href="tour.css?v=3">
   <script src="vendor/pannellum.js" defer></script>
-  <script src="tour.js?v=2" defer></script>
+  <script src="tour.js?v=3" defer></script>
 </head>
 <body>
   <main>
@@ -17,9 +17,15 @@
       <p>AKKERHEER · BEGANE GROND</p>
       <h1 id="room-name" aria-live="polite">Woonkamer</h1>
     </header>
-    <div class="view-mode" role="group" aria-label="Weergave">
-      <button type="button" data-mode="foto" aria-pressed="true" title="AI-bewerking van het panorama">Fotorealistisch</button>
-      <button type="button" data-mode="model" aria-pressed="false" title="Rechtstreeks uit Blender">3D-model</button>
+    <div class="tour-options">
+      <div class="view-mode" role="group" aria-label="Weergave">
+        <button type="button" data-mode="foto" aria-pressed="true" title="AI-bewerking van het panorama">Fotorealistisch</button>
+        <button type="button" data-mode="model" aria-pressed="false" title="Rechtstreeks uit Blender">3D-model</button>
+      </div>
+      <div class="time-mode" role="group" aria-label="Belichting">
+        <button type="button" data-time="dag" aria-pressed="true">Overdag</button>
+        <button type="button" data-time="avond" aria-pressed="false">Avond</button>
+      </div>
     </div>
     <p id="loading" role="status">Panorama laden…</p>
     <nav aria-label="Kies een ruimte">

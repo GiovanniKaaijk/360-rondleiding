@@ -18,9 +18,7 @@ body { margin: 0; }
 }
 .caption p { margin: 0 0 7px; font-size: .7rem; letter-spacing: .17em; font-weight: 650; }
 h1 { margin: 0; font: normal clamp(2rem, 4vw, 3.2rem) Georgia, serif; }
-.view-mode, nav {
-  position: fixed;
-  z-index: 2;
+.view-mode, .time-mode, nav {
   display: flex;
   gap: 7px;
   border-radius: 16px;
@@ -29,11 +27,19 @@ h1 { margin: 0; font: normal clamp(2rem, 4vw, 3.2rem) Georgia, serif; }
   box-shadow: 0 4px 24px #140e0a55;
 }
 nav {
+  position: fixed;
+  z-index: 2;
   bottom: max(20px, env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
 }
-.view-mode {
+.tour-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  position: fixed;
+  z-index: 2;
   top: calc(max(0px, env(safe-area-inset-top)) + 25px);
   right: 25px;
 }
@@ -63,16 +69,19 @@ button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 #loading[hidden] { display: none; }
 .pnlm-controls-container { inset: auto 18px max(20px, env(safe-area-inset-bottom)) auto; }
 .pnlm-container { background-color: #211a15; }
-@media (max-width: 440px) {
-  .caption { padding: 20px 18px 80px; }
-  .view-mode {
+@media (max-width: 680px) {
+  .caption { padding: 20px 18px 130px; }
+  .tour-options {
     top: calc(max(0px, env(safe-area-inset-top)) + 83px);
     left: 18px;
-    right: auto;
-    gap: 4px;
-    padding: 4px;
+    right: 18px;
+    justify-content: flex-start;
+    gap: 6px;
   }
-  .view-mode button { padding: 0 12px; }
+  .view-mode, .time-mode { gap: 3px; padding: 4px; }
+  .tour-options button { padding: 0 10px; }
+}
+@media (max-width: 440px) {
   .pnlm-zoom-controls { display: none; }
   .pnlm-controls-container { right: 10px; }
 }

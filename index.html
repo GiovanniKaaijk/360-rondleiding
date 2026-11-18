@@ -6,9 +6,9 @@
   <meta name="description" content="360°-proefrondleiding door de woonkamer en keuken van Akkerheer.">
   <title>Akkerheer | 360°-rondleiding</title>
   <link rel="stylesheet" href="vendor/pannellum.css">
-  <link rel="stylesheet" href="tour.css?v=4">
+  <link rel="stylesheet" href="tour.css?v=5">
   <script src="vendor/pannellum.js" defer></script>
-  <script src="tour.js?v=4" defer></script>
+  <script src="tour.js?v=5" defer></script>
 </head>
 <body>
   <main>
@@ -26,9 +26,13 @@
         <button type="button" data-time="dag" aria-pressed="true">Overdag</button>
         <button type="button" data-time="avond" aria-pressed="false">Avond</button>
       </div>
-      <div class="layout-mode" role="group" aria-label="Woonkamerindeling">
-        <button type="button" data-layout="haard" aria-pressed="true">Haard bij eettafel</button>
-        <button type="button" data-layout="bank" aria-pressed="false">Bank bij eettafel</button>
+      <div class="room-option" role="group" aria-label="Bankkleur" data-for-room="woonkamer" hidden>
+        <button type="button" data-sofa="naturel" aria-pressed="true">Naturel</button>
+        <button type="button" data-sofa="taupe" aria-pressed="false">Taupe</button>
+      </div>
+      <div class="room-option" role="group" aria-label="Keukenplafond" data-for-room="keuken" hidden>
+        <button type="button" data-ceiling="standaard" aria-pressed="true">Standaard</button>
+        <button type="button" data-ceiling="verlaagd" aria-pressed="false">Verlaagd + spots</button>
       </div>
     </div>
     <p id="loading" role="status">Panorama laden…</p>

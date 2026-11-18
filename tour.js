@@ -19,49 +19,63 @@ const rooms = {
   },
   keuken: {
     title: 'Keuken',
-    yaw: 0,
-    pitch: -8,
+    yaw: -5,
+    pitch: 8,
+    hfov: 95,
     exits: [
       { room: 'woonkamer', text: 'Naar de woonkamer', pitch: -10, yaw: -42, targetYaw: 112, targetPitch: -5 }
     ]
   }
 };
 
-const sceneId = ({ room, mode, time, layout }) => `${room}-${mode}-${time}-${layout}`;
+const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard' };
+const sceneId = ({ room, mode, time, sofa, ceiling }) => `${room}-${mode}-${time}-${sofa}-${ceiling}`;
+
+function panoramaPath({ room, mode, time, sofa, ceiling }) {
+  const name = {
+    binnenkomst: 'binnenkomst',
+    woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
+    keuken: ceiling === 'verlaagd' ? 'keuken-verlaagd' : 'keuken'
+  }[room];
+  const evening = time === 'avond' ? '-avond' : '';
+  const photo = mode === 'foto' ? '-fotorealistisch' : '';
+  return `panorama/${name}${evening}${photo}.jpg?v=5`;
+}
+
 const scenes = {};
-for (const [room, { yaw, pitch, hfov, exits }] of Object.entries(rooms)) {
+for (const [room, { exits, ...view }] of Object.entries(rooms)) {
   for (const mode of ['foto', 'model']) {
     for (const time of ['dag', 'avond']) {
-      for (const layout of ['haard', 'bank']) {
-        const variant = room === 'woonkamer' && layout === 'haard' ? '-haard'
-          : room === 'binnenkomst' && layout === 'bank' ? '-bank' : '';
-        const evening = time === 'avond' ? '-avond' : '';
-        const photo = mode === 'foto' ? '-fotorealistisch' : '';
-        scenes[sceneId({ room, mode, time, layout })] = {
-          yaw,
-          pitch,
-          ...(hfov ? { hfov } : {}),
-          panorama: `panorama/${room}${variant}${evening}${photo}.jpg?v=4`,
-          hotSpots: exits.map(({ room: destination, ...hotSpot }) => ({
-            ...hotSpot,
-            type: 'scene',
-            sceneId: sceneId({ room: destination, mode, time, layout })
-          }))
-        };
+      for (const sofa of ['naturel', 'taupe']) {
+        for (const ceiling of ['standaard', 'verlaagd']) {
+          const state = { room, mode, time, sofa, ceiling };
+          scenes[sceneId(state)] = {
+            yaw: view.yaw,
+            pitch: view.pitch,
+            ...(view.hfov ? { hfov: view.hfov } : {}),
+            panorama: panoramaPath(state),
+            hotSpots: exits.map(({ room: destination, ...hotSpot }) => ({
+              ...hotSpot,
+              type: 'scene',
+              sceneId: sceneId({ ...state, room: destination })
+            }))
+          };
+        }
       }
     }
   }
 }
 
-const controls = ['room', 'mode', 'time', 'layout'].map(field => [
+const controls = ['room', 'mode', 'time', 'sofa', 'ceiling'].map(field => [
   field, document.querySelectorAll(`button[data-${field}]`)
 ]);
+const roomOptions = document.querySelectorAll('[data-for-room]');
 const heading = document.getElementById('room-name');
 const status = document.getElementById('loading');
 
 const viewer = pannellum.viewer('panorama', {
   default: {
-    firstScene: sceneId({ room: 'binnenkomst', mode: 'foto', time: 'dag', layout: 'haard' }),
+    firstScene: sceneId(initialState),
     type: 'equirectangular',
     autoLoad: true,
     sceneFadeDuration: 320,
@@ -82,13 +96,16 @@ const viewer = pannellum.viewer('panorama', {
 });
 
 function sceneState(id) {
-  const [room, mode, time, layout] = id.split('-');
-  return { room, mode, time, layout };
+  const [room, mode, time, sofa, ceiling] = id.split('-');
+  return { room, mode, time, sofa, ceiling };
 }
 
 viewer.on('scenechange', (id) => {
   const state = sceneState(id);
   heading.textContent = rooms[state.room].title;
+  for (const group of roomOptions) {
+    group.hidden = group.dataset.forRoom !== state.room;
+  }
   for (const [field, buttons] of controls) {
     for (const button of buttons) {
       button.setAttribute('aria-pressed', String(button.dataset[field] === state[field]));
@@ -108,12 +125,10 @@ for (const [field, buttons] of controls) {
     button.addEventListener('click', () => {
       const state = sceneState(viewer.getScene());
       const value = button.dataset[field];
-      const goToLiving = field === 'layout' && state.room !== 'woonkamer';
-      if (state[field] === value && !goToLiving) return;
+      if (state[field] === value) return;
       state[field] = value;
-      if (goToLiving) state.room = 'woonkamer';
       const destination = sceneId(state);
-      if (field === 'room' || goToLiving) {
+      if (field === 'room') {
         viewer.loadScene(destination);
       } else {
         viewer.loadScene(destination, viewer.getPitch(), viewer.getYaw(), viewer.getHfov());

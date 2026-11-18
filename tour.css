@@ -1,0 +1,78 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  background: #211a15;
+  color: #fff7e9;
+}
+body { margin: 0; }
+#panorama { position: fixed; inset: 0; }
+.caption {
+  position: fixed;
+  z-index: 2;
+  top: max(0px, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+  padding: 25px 25px 44px;
+  background: linear-gradient(#1d1612d9, transparent);
+  pointer-events: none;
+}
+.caption p { margin: 0 0 7px; font-size: .7rem; letter-spacing: .17em; font-weight: 650; }
+h1 { margin: 0; font: normal clamp(2rem, 4vw, 3.2rem) Georgia, serif; }
+.view-mode, nav {
+  position: fixed;
+  z-index: 2;
+  display: flex;
+  gap: 7px;
+  border-radius: 16px;
+  padding: 6px;
+  background: #241c16eb;
+  box-shadow: 0 4px 24px #140e0a55;
+}
+nav {
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.view-mode {
+  top: calc(max(0px, env(safe-area-inset-top)) + 25px);
+  right: 25px;
+}
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 11px;
+  padding: 0 18px;
+  color: inherit;
+  background: transparent;
+  font: 600 .9rem system-ui, sans-serif;
+  cursor: pointer;
+}
+button:hover { background: #4a382b; }
+button[aria-pressed="true"] { color: #2e2119; background: #f0dfc5; }
+button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+#loading {
+  position: fixed;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 11px 14px;
+  background: #241c16;
+  border-radius: 8px;
+}
+#loading[hidden] { display: none; }
+.pnlm-controls-container { inset: auto 18px max(20px, env(safe-area-inset-bottom)) auto; }
+.pnlm-container { background-color: #211a15; }
+@media (max-width: 440px) {
+  .caption { padding: 20px 18px 80px; }
+  .view-mode {
+    top: calc(max(0px, env(safe-area-inset-top)) + 83px);
+    left: 18px;
+    right: auto;
+    gap: 4px;
+    padding: 4px;
+  }
+  .view-mode button { padding: 0 12px; }
+  .pnlm-zoom-controls { display: none; }
+  .pnlm-controls-container { right: 10px; }
+}

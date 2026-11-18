@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="360°-proefrondleiding door de woonkamer en keuken van Akkerheer.">
+  <title>Akkerheer | 360°-rondleiding</title>
+  <link rel="stylesheet" href="vendor/pannellum.css">
+  <link rel="stylesheet" href="tour.css">
+  <script src="vendor/pannellum.js" defer></script>
+  <script src="tour.js" defer></script>
+</head>
+<body>
+  <main>
+    <div id="panorama" aria-label="Interactief panorama"></div>
+    <header class="caption">
+      <p>AKKERHEER · BEGANE GROND</p>
+      <h1 id="room-name" aria-live="polite">Woonkamer</h1>
+    </header>
+    <div class="view-mode" role="group" aria-label="Weergave">
+      <button type="button" data-mode="foto" aria-pressed="true" title="AI-bewerking van het panorama">Fotorealistisch</button>
+      <button type="button" data-mode="model" aria-pressed="false" title="Rechtstreeks uit Blender">3D-model</button>
+    </div>
+    <p id="loading" role="status">Panorama laden…</p>
+    <nav aria-label="Kies een ruimte">
+      <button type="button" data-room="woonkamer" aria-pressed="true">Woonkamer</button>
+      <button type="button" data-room="keuken" aria-pressed="false">Keuken</button>
+    </nav>
+  </main>
+</body>
+</html>

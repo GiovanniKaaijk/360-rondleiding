@@ -24,7 +24,7 @@ for (const [room, { yaw, pitch, exits }] of Object.entries(rooms)) {
     scenes[sceneId(room, mode)] = {
       yaw,
       pitch,
-      panorama: `panorama/${room}${mode === 'foto' ? '-fotorealistisch.png' : '.jpg'}`,
+      panorama: `panorama/${room}${mode === 'foto' ? '-fotorealistisch.jpg' : '.jpg'}`,
       hotSpots: exits.map(({ room: destination, ...hotSpot }) => ({
         ...hotSpot,
         type: 'scene',

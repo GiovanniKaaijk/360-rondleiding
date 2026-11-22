@@ -25,13 +25,15 @@ const rooms = {
     exits: [
       { room: 'woonkamer', text: 'Naar de woonkamer', pitch: -10, yaw: -42, targetYaw: 112, targetPitch: -5 }
     ]
-  }
+  },
+  badkamer: { title: 'Badkamer', floor: 'EERSTE VERDIEPING', yaw: 0, pitch: -12, hfov: 99, exits: [] }
 };
 
-const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard' };
-const sceneId = ({ room, mode, time, sofa, ceiling }) => `${room}-${mode}-${time}-${sofa}-${ceiling}`;
+const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige' };
+const sceneId = ({ room, mode, time, sofa, ceiling, tile }) => `${room}-${mode}-${time}-${sofa}-${ceiling}-${tile}`;
 
-function panoramaPath({ room, mode, time, sofa, ceiling }) {
+function panoramaPath({ room, mode, time, sofa, ceiling, tile }) {
+  if (room === 'badkamer') return `panorama/badkamer-${tile}-360.jpg?v=6`;
   const name = {
     binnenkomst: 'binnenkomst',
     woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
@@ -43,33 +45,38 @@ function panoramaPath({ room, mode, time, sofa, ceiling }) {
 }
 
 const scenes = {};
-for (const [room, { exits, ...view }] of Object.entries(rooms)) {
-  for (const mode of ['foto', 'model']) {
-    for (const time of ['dag', 'avond']) {
-      for (const sofa of ['naturel', 'taupe']) {
-        for (const ceiling of ['standaard', 'verlaagd']) {
-          const state = { room, mode, time, sofa, ceiling };
-          scenes[sceneId(state)] = {
-            yaw: view.yaw,
-            pitch: view.pitch,
-            ...(view.hfov ? { hfov: view.hfov } : {}),
-            panorama: panoramaPath(state),
-            hotSpots: exits.map(({ room: destination, ...hotSpot }) => ({
-              ...hotSpot,
-              type: 'scene',
-              sceneId: sceneId({ ...state, room: destination })
-            }))
-          };
-        }
-      }
-    }
+const settings = {
+  mode: ['foto', 'model'],
+  time: ['dag', 'avond'],
+  sofa: ['naturel', 'taupe'],
+  ceiling: ['standaard', 'verlaagd'],
+  tile: ['beige', 'ivory']
+};
+const choices = Object.entries(settings).reduce((states, [field, values]) =>
+  states.flatMap(state => values.map(value => ({ ...state, [field]: value }))), [{}]);
+for (const [room, view] of Object.entries(rooms)) {
+  for (const choice of choices) {
+    const state = { ...choice, room };
+    scenes[sceneId(state)] = {
+      yaw: view.yaw,
+      pitch: view.pitch,
+      ...(view.hfov ? { hfov: view.hfov } : {}),
+      panorama: panoramaPath(state),
+      hotSpots: view.exits.map(({ room: destination, ...hotSpot }) => ({
+        ...hotSpot,
+        type: 'scene',
+        sceneId: sceneId({ ...state, room: destination })
+      }))
+    };
   }
 }
 
-const controls = ['room', 'mode', 'time', 'sofa', 'ceiling'].map(field => [
+const controls = ['room', ...Object.keys(settings)].map(field => [
   field, document.querySelectorAll(`button[data-${field}]`)
 ]);
 const roomOptions = document.querySelectorAll('[data-for-room]');
+const houseFloor = document.getElementById('house-floor');
+const groundFloorControls = document.querySelectorAll('[data-ground-floor]');
 const heading = document.getElementById('room-name');
 const status = document.getElementById('loading');
 
@@ -96,13 +103,15 @@ const viewer = pannellum.viewer('panorama', {
 });
 
 function sceneState(id) {
-  const [room, mode, time, sofa, ceiling] = id.split('-');
-  return { room, mode, time, sofa, ceiling };
+  const [room, mode, time, sofa, ceiling, tile] = id.split('-');
+  return { room, mode, time, sofa, ceiling, tile };
 }
 
-viewer.on('scenechange', (id) => {
+function updateControls(id) {
   const state = sceneState(id);
   heading.textContent = rooms[state.room].title;
+  houseFloor.textContent = rooms[state.room].floor || 'BEGANE GROND';
+  for (const group of groundFloorControls) group.hidden = state.room === 'badkamer';
   for (const group of roomOptions) {
     group.hidden = group.dataset.forRoom !== state.room;
   }
@@ -111,7 +120,9 @@ viewer.on('scenechange', (id) => {
       button.setAttribute('aria-pressed', String(button.dataset[field] === state[field]));
     }
   }
-});
+}
+viewer.on('scenechange', updateControls);
+updateControls(sceneId(initialState));
 
 viewer.on('load', () => {
   status.hidden = true;

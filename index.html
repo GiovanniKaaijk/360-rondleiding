@@ -3,26 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="360°-proefrondleiding door de woonkamer en keuken van Akkerheer.">
+  <meta name="description" content="360°-proefrondleiding door de woonkamer, keuken en badkamer van Akkerheer.">
   <title>Akkerheer | 360°-rondleiding</title>
   <link rel="stylesheet" href="vendor/pannellum.css">
-  <link rel="stylesheet" href="tour.css?v=5">
+  <link rel="stylesheet" href="tour.css?v=6">
   <script src="vendor/pannellum.js" defer></script>
-  <script src="tour.js?v=5" defer></script>
+  <script src="tour.js?v=6" defer></script>
 </head>
 <body>
   <main>
     <div id="panorama" aria-label="Interactief panorama"></div>
     <header class="caption">
-      <p>AKKERHEER · BEGANE GROND</p>
+      <p>AKKERHEER · <span id="house-floor">BEGANE GROND</span></p>
       <h1 id="room-name" aria-live="polite">Binnenkomst</h1>
     </header>
     <div class="tour-options">
-      <div class="view-mode" role="group" aria-label="Weergave">
+      <div class="view-mode" role="group" aria-label="Weergave" data-ground-floor>
         <button type="button" data-mode="foto" aria-pressed="true" title="AI-bewerking van het panorama">Fotorealistisch</button>
         <button type="button" data-mode="model" aria-pressed="false" title="Rechtstreeks uit Blender">3D-model</button>
       </div>
-      <div class="time-mode" role="group" aria-label="Belichting">
+      <div class="time-mode" role="group" aria-label="Belichting" data-ground-floor>
         <button type="button" data-time="dag" aria-pressed="true">Overdag</button>
         <button type="button" data-time="avond" aria-pressed="false">Avond</button>
       </div>
@@ -34,12 +34,18 @@
         <button type="button" data-ceiling="standaard" aria-pressed="true">Standaard</button>
         <button type="button" data-ceiling="verlaagd" aria-pressed="false">Verlaagd + spots</button>
       </div>
+      <div class="room-option" role="group" aria-label="Badkamertegels" data-for-room="badkamer" hidden>
+        <button type="button" data-tile="beige" aria-pressed="true" title="Vloer 36RV70R · wand 44RV79R">Beige</button>
+        <button type="button" data-tile="ivory" aria-pressed="false" title="Vloer 36RV20R · wand 44RV29R">Ivory</button>
+        <a class="plan-link" href="badkamer-plattegrond.svg" target="_blank" rel="noopener">Plattegrond</a>
+      </div>
     </div>
     <p id="loading" role="status">Panorama laden…</p>
     <nav aria-label="Kies een ruimte">
       <button type="button" data-room="binnenkomst" aria-pressed="true">Binnenkomst</button>
       <button type="button" data-room="woonkamer" aria-pressed="false">Woonkamer</button>
       <button type="button" data-room="keuken" aria-pressed="false">Keuken</button>
+      <button type="button" data-room="badkamer" aria-pressed="false">Badkamer</button>
     </nav>
   </main>
 </body>

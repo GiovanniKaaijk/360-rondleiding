@@ -45,8 +45,8 @@ nav {
   max-width: 480px;
 }
 .room-option { margin-left: auto; }
-.room-option[hidden] { display: none; }
-button {
+.tour-options [hidden] { display: none; }
+button, .plan-link {
   min-height: 44px;
   border: 0;
   border-radius: 11px;
@@ -56,9 +56,10 @@ button {
   font: 600 .9rem system-ui, sans-serif;
   cursor: pointer;
 }
-button:hover { background: #4a382b; }
+.plan-link { display: inline-flex; align-items: center; text-decoration: none; }
+button:hover, .plan-link:hover { background: #4a382b; }
 button[aria-pressed="true"] { color: #2e2119; background: #f0dfc5; }
-button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+button:focus-visible, .plan-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 #loading {
   position: fixed;
   z-index: 3;
@@ -83,11 +84,11 @@ button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   }
   .view-mode, .time-mode, .room-option { gap: 3px; padding: 4px; }
   .room-option { margin-left: 0; }
-  .tour-options button { padding: 0 10px; }
+  .tour-options button, .plan-link { padding: 0 10px; }
 }
 @media (max-width: 440px) {
   .pnlm-zoom-controls { display: none; }
   .pnlm-controls-container { right: 10px; }
-  nav { gap: 3px; padding: 4px; }
-  nav button { padding: 0 9px; font-size: .78rem; }
+  nav { left: 10px; right: 46px; transform: none; justify-content: center; gap: 2px; padding: 4px; }
+  nav button { padding: 0 6px; font-size: .75rem; }
 }

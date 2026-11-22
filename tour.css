@@ -18,7 +18,7 @@ body { margin: 0; }
 }
 .caption p { margin: 0 0 7px; font-size: .7rem; letter-spacing: .17em; font-weight: 650; }
 h1 { margin: 0; font: normal clamp(2rem, 4vw, 3.2rem) Georgia, serif; }
-.view-mode, .time-mode, .room-option, nav {
+.time-mode, .room-option, .room-list, #room-menu summary {
   display: flex;
   gap: 7px;
   border-radius: 16px;
@@ -33,6 +33,40 @@ nav {
   left: 50%;
   transform: translateX(-50%);
 }
+#room-menu summary {
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  list-style: none;
+  min-width: 124px;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 0 18px;
+  font: 600 .9rem system-ui, sans-serif;
+  cursor: pointer;
+}
+#room-menu summary::-webkit-details-marker { display: none; }
+#room-menu summary::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border: solid currentColor;
+  border-width: 1.6px 0 0 1.6px;
+  transform: translateY(2px) rotate(45deg);
+}
+#room-menu[open] summary::after { transform: translateY(-2px) rotate(225deg); }
+.room-list {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  width: max-content;
+  min-width: 180px;
+  max-height: min(65vh, 430px);
+  overflow: auto;
+  flex-direction: column;
+}
+.room-list button { text-align: left; }
 .tour-options {
   display: flex;
   flex-wrap: wrap;
@@ -57,9 +91,9 @@ button, .plan-link {
   cursor: pointer;
 }
 .plan-link { display: inline-flex; align-items: center; text-decoration: none; }
-button:hover, .plan-link:hover { background: #4a382b; }
+button:hover, .plan-link:hover, #room-menu summary:hover { background: #4a382b; }
 button[aria-pressed="true"] { color: #2e2119; background: #f0dfc5; }
-button:focus-visible, .plan-link:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+button:focus-visible, .plan-link:focus-visible, #room-menu summary:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 #loading {
   position: fixed;
   z-index: 3;
@@ -82,13 +116,11 @@ button:focus-visible, .plan-link:focus-visible { outline: 2px solid #fff; outlin
     justify-content: flex-start;
     gap: 6px;
   }
-  .view-mode, .time-mode, .room-option { gap: 3px; padding: 4px; }
+  .time-mode, .room-option { gap: 3px; padding: 4px; }
   .room-option { margin-left: 0; }
   .tour-options button, .plan-link { padding: 0 10px; }
 }
 @media (max-width: 440px) {
   .pnlm-zoom-controls { display: none; }
   .pnlm-controls-container { right: 10px; }
-  nav { left: 10px; right: 46px; transform: none; flex-wrap: wrap; justify-content: center; gap: 2px; padding: 4px; }
-  nav button { padding: 0 6px; font-size: .75rem; }
 }

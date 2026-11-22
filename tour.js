@@ -6,7 +6,8 @@ const rooms = {
     hfov: 118,
     exits: [
       { room: 'keuken', text: 'Links naar de keuken', pitch: -11, yaw: -49 },
-      { room: 'woonkamer', text: 'Rechts naar de woonkamer', pitch: -11, yaw: 49 }
+      { room: 'woonkamer', text: 'Rechts naar de woonkamer', pitch: -11, yaw: 49 },
+      { room: 'hal', text: 'Terug naar de hal', pitch: -10, yaw: 162 }
     ]
   },
   woonkamer: {
@@ -27,27 +28,36 @@ const rooms = {
     ]
   },
   badkamer: { title: 'Badkamer', floor: 'EERSTE VERDIEPING', yaw: 10, pitch: -10, hfov: 105, exits: [], fixedLighting: true },
-  wc: { title: 'WC beneden', yaw: 33, pitch: -27, hfov: 118, exits: [], fixedLighting: true }
+  hal: {
+    title: 'Hal', yaw: -15, pitch: -8, hfov: 103, fixedLighting: true,
+    exits: [
+      { room: 'wc', text: 'Naar de wc', yaw: -56, pitch: -12 },
+      { room: 'binnenkomst', text: 'Naar de woonruimte', yaw: -94, pitch: -8 }
+    ]
+  },
+  wc: {
+    title: 'WC beneden', yaw: -3, pitch: -23, hfov: 114, fixedLighting: true,
+    exits: [{ room: 'hal', text: 'Naar de hal', yaw: 148, pitch: -12 }]
+  }
 };
 
-const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige', mirror: 'recht', wctile: 'beige', backwall: 'tegels' };
+const initialState = { room: 'binnenkomst', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige', mirror: 'recht', wctile: 'beige', backwall: 'tegels' };
 
-function panoramaPath({ room, mode, time, sofa, ceiling, tile, mirror, wctile, backwall }) {
-  const photo = mode === 'foto' ? '-fotorealistisch' : '';
-  if (room === 'wc') return `panorama/wc-beneden-${wctile}-${backwall}-360${photo}.jpg?v=9`;
-  if (room === 'badkamer') return `panorama/badkamer-${tile}-${mirror}-360${photo}.jpg?v=9`;
+function panoramaPath({ room, time, sofa, ceiling, tile, mirror, wctile, backwall }) {
+  if (room === 'hal') return 'panorama/hal-360-fotorealistisch.jpg?v=10';
+  if (room === 'wc') return `panorama/wc-beneden-${wctile}-${backwall}-360-hal-fotorealistisch.jpg?v=10`;
+  if (room === 'badkamer') return `panorama/badkamer-${tile}-${mirror}-360-fotorealistisch.jpg?v=9`;
   const name = {
     binnenkomst: 'binnenkomst',
     woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
     keuken: ceiling === 'verlaagd' ? 'keuken-verlaagd' : 'keuken'
   }[room];
   const evening = time === 'avond' ? '-avond' : '';
-  return `panorama/${name}${evening}${photo}.jpg?v=5`;
+  return `panorama/${name}${evening}-fotorealistisch.jpg?v=5`;
 }
 
 const scenes = {};
 const settings = {
-  mode: ['foto', 'model'],
   time: ['dag', 'avond'],
   sofa: ['naturel', 'taupe'],
   ceiling: ['standaard', 'verlaagd'],
@@ -85,6 +95,8 @@ const houseFloor = document.getElementById('house-floor');
 const timeControls = document.querySelector('.time-mode');
 const heading = document.getElementById('room-name');
 const status = document.getElementById('loading');
+const roomMenu = document.getElementById('room-menu');
+const roomToggle = roomMenu.querySelector('summary');
 
 const viewer = pannellum.viewer('panorama', {
   default: {
@@ -115,6 +127,7 @@ function sceneState(id) {
 
 function updateControls(id) {
   const state = sceneState(id);
+  roomMenu.open = false;
   heading.textContent = rooms[state.room].title;
   houseFloor.textContent = rooms[state.room].floor || 'BEGANE GROND';
   timeControls.hidden = Boolean(rooms[state.room].fixedLighting);
@@ -142,6 +155,10 @@ for (const [field, buttons] of controls) {
     button.addEventListener('click', () => {
       const state = sceneState(viewer.getScene());
       const value = button.dataset[field];
+      if (field === 'room') {
+        roomMenu.open = false;
+        roomToggle.focus();
+      }
       if (state[field] === value) return;
       state[field] = value;
       const destination = sceneId(state);
@@ -153,3 +170,14 @@ for (const [field, buttons] of controls) {
     });
   }
 }
+
+
+roomMenu.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && roomMenu.open) {
+    roomMenu.open = false;
+    roomToggle.focus();
+  }
+});
+document.addEventListener('pointerdown', event => {
+  if (roomMenu.open && !roomMenu.contains(event.target)) roomMenu.open = false;
+});

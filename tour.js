@@ -33,14 +33,14 @@ const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'na
 const sceneId = ({ room, mode, time, sofa, ceiling, tile }) => `${room}-${mode}-${time}-${sofa}-${ceiling}-${tile}`;
 
 function panoramaPath({ room, mode, time, sofa, ceiling, tile }) {
-  if (room === 'badkamer') return `panorama/badkamer-${tile}-360.jpg?v=6`;
+  const photo = mode === 'foto' ? '-fotorealistisch' : '';
+  if (room === 'badkamer') return `panorama/badkamer-${tile}-360${photo}.jpg?v=7`;
   const name = {
     binnenkomst: 'binnenkomst',
     woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
     keuken: ceiling === 'verlaagd' ? 'keuken-verlaagd' : 'keuken'
   }[room];
   const evening = time === 'avond' ? '-avond' : '';
-  const photo = mode === 'foto' ? '-fotorealistisch' : '';
   return `panorama/${name}${evening}${photo}.jpg?v=5`;
 }
 
@@ -76,7 +76,7 @@ const controls = ['room', ...Object.keys(settings)].map(field => [
 ]);
 const roomOptions = document.querySelectorAll('[data-for-room]');
 const houseFloor = document.getElementById('house-floor');
-const groundFloorControls = document.querySelectorAll('[data-ground-floor]');
+const timeControls = document.querySelector('.time-mode');
 const heading = document.getElementById('room-name');
 const status = document.getElementById('loading');
 
@@ -111,7 +111,7 @@ function updateControls(id) {
   const state = sceneState(id);
   heading.textContent = rooms[state.room].title;
   houseFloor.textContent = rooms[state.room].floor || 'BEGANE GROND';
-  for (const group of groundFloorControls) group.hidden = state.room === 'badkamer';
+  timeControls.hidden = state.room === 'badkamer';
   for (const group of roomOptions) {
     group.hidden = group.dataset.forRoom !== state.room;
   }

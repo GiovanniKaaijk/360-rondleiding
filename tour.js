@@ -26,15 +26,16 @@ const rooms = {
       { room: 'woonkamer', text: 'Naar de woonkamer', pitch: -10, yaw: -42, targetYaw: 112, targetPitch: -5 }
     ]
   },
-  badkamer: { title: 'Badkamer', floor: 'EERSTE VERDIEPING', yaw: -52, pitch: -11, hfov: 118, exits: [] }
+  badkamer: { title: 'Badkamer', floor: 'EERSTE VERDIEPING', yaw: 10, pitch: -10, hfov: 105, exits: [], fixedLighting: true },
+  wc: { title: 'WC beneden', yaw: 33, pitch: -27, hfov: 118, exits: [], fixedLighting: true }
 };
 
-const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige', screen: 'muur' };
-const sceneId = ({ room, mode, time, sofa, ceiling, tile, screen }) => `${room}-${mode}-${time}-${sofa}-${ceiling}-${tile}-${screen}`;
+const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige', mirror: 'recht', wctile: 'beige', backwall: 'tegels' };
 
-function panoramaPath({ room, mode, time, sofa, ceiling, tile, screen }) {
+function panoramaPath({ room, mode, time, sofa, ceiling, tile, mirror, wctile, backwall }) {
   const photo = mode === 'foto' ? '-fotorealistisch' : '';
-  if (room === 'badkamer') return `panorama/badkamer-${tile}-${screen}-360${photo}.jpg?v=8`;
+  if (room === 'wc') return `panorama/wc-beneden-${wctile}-${backwall}-360${photo}.jpg?v=9`;
+  if (room === 'badkamer') return `panorama/badkamer-${tile}-${mirror}-360${photo}.jpg?v=9`;
   const name = {
     binnenkomst: 'binnenkomst',
     woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
@@ -51,8 +52,12 @@ const settings = {
   sofa: ['naturel', 'taupe'],
   ceiling: ['standaard', 'verlaagd'],
   tile: ['beige', 'ivory'],
-  screen: ['muur', 'glas']
+  mirror: ['recht', 'rond'],
+  wctile: ['beige', 'ivory'],
+  backwall: ['tegels', 'latten']
 };
+const stateFields = ['room', ...Object.keys(settings)];
+const sceneId = state => stateFields.map(field => state[field]).join('-');
 const choices = Object.entries(settings).reduce((states, [field, values]) =>
   states.flatMap(state => values.map(value => ({ ...state, [field]: value }))), [{}]);
 for (const [room, view] of Object.entries(rooms)) {
@@ -72,7 +77,7 @@ for (const [room, view] of Object.entries(rooms)) {
   }
 }
 
-const controls = ['room', ...Object.keys(settings)].map(field => [
+const controls = stateFields.map(field => [
   field, document.querySelectorAll(`button[data-${field}]`)
 ]);
 const roomOptions = document.querySelectorAll('[data-for-room]');
@@ -104,15 +109,15 @@ const viewer = pannellum.viewer('panorama', {
 });
 
 function sceneState(id) {
-  const [room, mode, time, sofa, ceiling, tile, screen] = id.split('-');
-  return { room, mode, time, sofa, ceiling, tile, screen };
+  const values = id.split('-');
+  return Object.fromEntries(stateFields.map((field, i) => [field, values[i]]));
 }
 
 function updateControls(id) {
   const state = sceneState(id);
   heading.textContent = rooms[state.room].title;
   houseFloor.textContent = rooms[state.room].floor || 'BEGANE GROND';
-  timeControls.hidden = state.room === 'badkamer';
+  timeControls.hidden = Boolean(rooms[state.room].fixedLighting);
   for (const group of roomOptions) {
     group.hidden = group.dataset.forRoom !== state.room;
   }

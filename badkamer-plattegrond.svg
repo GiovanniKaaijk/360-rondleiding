@@ -57,7 +57,7 @@
   <ellipse cx="317" cy="452" rx="22" ry="16" fill="#e7dfd4" stroke="#a08d78"/>
   <text x="367" y="459" class="text">Wc</text>
   <path class="line" d="M431 527.5h27"/>
-  <text x="465" y="534" class="text">Muurtje of glaswand</text>
+  <text x="465" y="534" class="text">Douchemuurtje</text>
   <text x="339" y="591" text-anchor="middle" class="text">Inloopdouche</text>
 
   <path d="M60 768H879" stroke="#d4c8b9"/>

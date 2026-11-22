@@ -89,6 +89,6 @@ button:focus-visible, .plan-link:focus-visible { outline: 2px solid #fff; outlin
 @media (max-width: 440px) {
   .pnlm-zoom-controls { display: none; }
   .pnlm-controls-container { right: 10px; }
-  nav { left: 10px; right: 46px; transform: none; justify-content: center; gap: 2px; padding: 4px; }
+  nav { left: 10px; right: 46px; transform: none; flex-wrap: wrap; justify-content: center; gap: 2px; padding: 4px; }
   nav button { padding: 0 6px; font-size: .75rem; }
 }

@@ -26,15 +26,15 @@ const rooms = {
       { room: 'woonkamer', text: 'Naar de woonkamer', pitch: -10, yaw: -42, targetYaw: 112, targetPitch: -5 }
     ]
   },
-  badkamer: { title: 'Badkamer', floor: 'EERSTE VERDIEPING', yaw: 0, pitch: -12, hfov: 99, exits: [] }
+  badkamer: { title: 'Badkamer', floor: 'EERSTE VERDIEPING', yaw: -52, pitch: -11, hfov: 118, exits: [] }
 };
 
-const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige' };
-const sceneId = ({ room, mode, time, sofa, ceiling, tile }) => `${room}-${mode}-${time}-${sofa}-${ceiling}-${tile}`;
+const initialState = { room: 'binnenkomst', mode: 'foto', time: 'dag', sofa: 'naturel', ceiling: 'standaard', tile: 'beige', screen: 'muur' };
+const sceneId = ({ room, mode, time, sofa, ceiling, tile, screen }) => `${room}-${mode}-${time}-${sofa}-${ceiling}-${tile}-${screen}`;
 
-function panoramaPath({ room, mode, time, sofa, ceiling, tile }) {
+function panoramaPath({ room, mode, time, sofa, ceiling, tile, screen }) {
   const photo = mode === 'foto' ? '-fotorealistisch' : '';
-  if (room === 'badkamer') return `panorama/badkamer-${tile}-360${photo}.jpg?v=7`;
+  if (room === 'badkamer') return `panorama/badkamer-${tile}-${screen}-360${photo}.jpg?v=8`;
   const name = {
     binnenkomst: 'binnenkomst',
     woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
@@ -50,7 +50,8 @@ const settings = {
   time: ['dag', 'avond'],
   sofa: ['naturel', 'taupe'],
   ceiling: ['standaard', 'verlaagd'],
-  tile: ['beige', 'ivory']
+  tile: ['beige', 'ivory'],
+  screen: ['muur', 'glas']
 };
 const choices = Object.entries(settings).reduce((states, [field, values]) =>
   states.flatMap(state => values.map(value => ({ ...state, [field]: value }))), [{}]);
@@ -103,8 +104,8 @@ const viewer = pannellum.viewer('panorama', {
 });
 
 function sceneState(id) {
-  const [room, mode, time, sofa, ceiling, tile] = id.split('-');
-  return { room, mode, time, sofa, ceiling, tile };
+  const [room, mode, time, sofa, ceiling, tile, screen] = id.split('-');
+  return { room, mode, time, sofa, ceiling, tile, screen };
 }
 
 function updateControls(id) {

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="940" height="850" viewBox="0 0 940 850" role="img" aria-labelledby="titel beschrijving">
   <title id="titel">Badkamer Akkerheer · indeling en maten</title>
-  <desc id="beschrijving">De badkamer meet 2.150 bij 3.000 millimeter. Ingang rechts op de plattegrond. Bij binnenkomst staat rechts het badmeubel met dubbele wastafel en hoge kast. De wc en inloopdouche zijn links, met een betegeld muurtje ertussen.</desc>
+  <desc id="beschrijving">De badkamer meet 2.150 bij 3.000 millimeter. Ingang rechts op de plattegrond. Bij binnenkomst staat rechts het badmeubel met dubbele wastafel en hoge kast aan de linkerzijde. De wc en inloopdouche zijn links, met een betegeld muurtje ertussen.</desc>
   <defs>
     <marker id="maatpijl" viewBox="0 0 9 9" refX="8.4" refY="4.5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0 1 8 4.5 0 8" fill="none" stroke="#66594d" stroke-width="1.2"/>
@@ -37,14 +37,16 @@
   <path d="M696 356h-69" class="line" marker-end="url(#maatpijl)"/>
   <text x="702" y="362" class="text">Entree</text>
 
+  <g transform="translate(85 0)">
   <rect x="258.6" y="198" width="258.4" height="83.6" rx="5" class="fixture"/>
   <rect x="286" y="220" width="81" height="52" rx="11" fill="#f1ece4" stroke="#978477"/>
   <rect x="409" y="220" width="81" height="52" rx="11" fill="#f1ece4" stroke="#978477"/>
   <path d="M326 210v15m123-15v15" stroke="#986d48" stroke-width="5" stroke-linecap="round"/>
-  <rect x="521.5" y="198" width="74" height="78" rx="3" fill="#9c6947" stroke="#765137"/>
-  <path class="line" d="M325 282v25m234-31v31"/>
-  <text x="325" y="326" text-anchor="middle" class="text">Dubbele wastafel · 150 cm</text>
-  <text x="559" y="326" text-anchor="middle" class="text">Hoge kast</text>
+  </g>
+  <rect x="259.4" y="198" width="74" height="78" rx="3" fill="#77513a" stroke="#594331"/>
+  <path class="line" d="M296 276v31m143-25v25"/>
+  <text x="460" y="326" text-anchor="middle" class="text">Dubbele wastafel · 150 cm</text>
+  <text x="296" y="326" text-anchor="middle" class="text">Hoge kast</text>
   <path d="M251 535h180v172H251z" fill="#ddccaf" fill-opacity=".55"/>
   <rect x="245" y="519.4" width="183.6" height="17" fill="#a89175" stroke="#786656"/>
   <path d="M273 691h117" stroke="#936846" stroke-width="6" stroke-linecap="round"/>
@@ -55,7 +57,7 @@
   <ellipse cx="317" cy="452" rx="22" ry="16" fill="#e7dfd4" stroke="#a08d78"/>
   <text x="367" y="459" class="text">Wc</text>
   <path class="line" d="M431 527.5h27"/>
-  <text x="465" y="534" class="text">Douchemuurtje</text>
+  <text x="465" y="534" class="text">Muurtje of glaswand</text>
   <text x="339" y="591" text-anchor="middle" class="text">Inloopdouche</text>
 
   <path d="M60 768H879" stroke="#d4c8b9"/>

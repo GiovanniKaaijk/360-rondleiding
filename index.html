@@ -6,9 +6,9 @@
   <meta name="description" content="360°-proefrondleiding door de woonkamer, keuken, hal, badkamer en wc van Akkerheer.">
   <title>Akkerheer | 360°-rondleiding</title>
   <link rel="stylesheet" href="vendor/pannellum.css">
-  <link rel="stylesheet" href="tour.css?v=10">
+  <link rel="stylesheet" href="tour.css?v=11">
   <script src="vendor/pannellum.js" defer></script>
-  <script src="tour.js?v=10" defer></script>
+  <script src="tour.js?v=11" defer></script>
 </head>
 <body>
   <main>
@@ -31,8 +31,16 @@
         <button type="button" data-ceiling="verlaagd" aria-pressed="false">Verlaagd + spots</button>
       </div>
       <div class="room-option" role="group" aria-label="Badkamertegels" data-for-room="badkamer" hidden>
-        <button type="button" data-tile="beige" aria-pressed="true" title="Vloer 36RV70R · wand 44RV79R">Beige</button>
-        <button type="button" data-tile="ivory" aria-pressed="false" title="Vloer 36RV20R · wand 44RV29R">Ivory</button>
+        <select id="bathroom-tile" aria-label="Tegels badkamer">
+          <optgroup label="Riverside Natural">
+            <option value="beige">Riverside Beige</option>
+            <option value="ivory">Riverside Ivory</option>
+          </optgroup>
+          <optgroup label="Vicenza Antica Natural">
+            <option value="vicenza_ivory">Vicenza Antica Ivory</option>
+            <option value="vicenza_beige">Vicenza Antica Beige</option>
+          </optgroup>
+        </select>
         <a class="plan-link" href="badkamer-plattegrond.svg?v=9" target="_blank" rel="noopener">Plattegrond</a>
       </div>
       <div class="room-option" role="group" aria-label="Badkamerspiegel" data-for-room="badkamer" hidden>

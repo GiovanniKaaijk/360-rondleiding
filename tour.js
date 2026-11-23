@@ -46,7 +46,7 @@ const initialState = { room: 'binnenkomst', time: 'dag', sofa: 'naturel', ceilin
 function panoramaPath({ room, time, sofa, ceiling, tile, mirror, wctile, backwall }) {
   if (room === 'hal') return 'panorama/hal-360-fotorealistisch.jpg?v=10';
   if (room === 'wc') return `panorama/wc-beneden-${wctile}-${backwall}-360-hal-fotorealistisch.jpg?v=10`;
-  if (room === 'badkamer') return `panorama/badkamer-${tile}-${mirror}-360-fotorealistisch.jpg?v=9`;
+  if (room === 'badkamer') return `panorama/badkamer-${tile.replace('_', '-')}-${mirror}-360-fotorealistisch.jpg?v=11`;
   const name = {
     binnenkomst: 'binnenkomst',
     woonkamer: sofa === 'taupe' ? 'woonkamer-haard-taupe' : 'woonkamer-haard',
@@ -61,7 +61,7 @@ const settings = {
   time: ['dag', 'avond'],
   sofa: ['naturel', 'taupe'],
   ceiling: ['standaard', 'verlaagd'],
-  tile: ['beige', 'ivory'],
+  tile: ['beige', 'ivory', 'vicenza_ivory', 'vicenza_beige'],
   mirror: ['recht', 'rond'],
   wctile: ['beige', 'ivory'],
   backwall: ['tegels', 'latten']
@@ -91,6 +91,7 @@ const controls = stateFields.map(field => [
   field, document.querySelectorAll(`button[data-${field}]`)
 ]);
 const roomOptions = document.querySelectorAll('[data-for-room]');
+const bathroomTile = document.getElementById('bathroom-tile');
 const houseFloor = document.getElementById('house-floor');
 const timeControls = document.querySelector('.time-mode');
 const heading = document.getElementById('room-name');
@@ -131,6 +132,7 @@ function updateControls(id) {
   heading.textContent = rooms[state.room].title;
   houseFloor.textContent = rooms[state.room].floor || 'BEGANE GROND';
   timeControls.hidden = Boolean(rooms[state.room].fixedLighting);
+  bathroomTile.value = state.tile;
   for (const group of roomOptions) {
     group.hidden = group.dataset.forRoom !== state.room;
   }
@@ -150,24 +152,24 @@ viewer.on('error', () => {
   status.textContent = 'Het panorama kon niet worden geladen.';
   status.hidden = false;
 });
+function changeView(field, value) {
+  const state = sceneState(viewer.getScene());
+  if (field === 'room') {
+    roomMenu.open = false;
+    roomToggle.focus();
+  }
+  if (state[field] === value) return;
+  const destination = sceneId({ ...state, [field]: value });
+  if (field === 'room') {
+    viewer.loadScene(destination);
+  } else {
+    viewer.loadScene(destination, viewer.getPitch(), viewer.getYaw(), viewer.getHfov());
+  }
+}
+bathroomTile.addEventListener('change', () => changeView('tile', bathroomTile.value));
 for (const [field, buttons] of controls) {
   for (const button of buttons) {
-    button.addEventListener('click', () => {
-      const state = sceneState(viewer.getScene());
-      const value = button.dataset[field];
-      if (field === 'room') {
-        roomMenu.open = false;
-        roomToggle.focus();
-      }
-      if (state[field] === value) return;
-      state[field] = value;
-      const destination = sceneId(state);
-      if (field === 'room') {
-        viewer.loadScene(destination);
-      } else {
-        viewer.loadScene(destination, viewer.getPitch(), viewer.getYaw(), viewer.getHfov());
-      }
-    });
+    button.addEventListener('click', () => changeView(field, button.dataset[field]));
   }
 }
 

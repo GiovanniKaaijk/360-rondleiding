@@ -91,9 +91,20 @@ button, .plan-link {
   cursor: pointer;
 }
 .plan-link { display: inline-flex; align-items: center; text-decoration: none; }
+#bathroom-tile {
+  min-height: 44px;
+  min-width: 0;
+  border: 0;
+  border-radius: 11px;
+  padding: 0 10px;
+  color: #2e2119;
+  background: #f0dfc5;
+  font: 600 .9rem system-ui, sans-serif;
+  cursor: pointer;
+}
 button:hover, .plan-link:hover, #room-menu summary:hover { background: #4a382b; }
 button[aria-pressed="true"] { color: #2e2119; background: #f0dfc5; }
-button:focus-visible, .plan-link:focus-visible, #room-menu summary:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+button:focus-visible, .plan-link:focus-visible, #room-menu summary:focus-visible, #bathroom-tile:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 #loading {
   position: fixed;
   z-index: 3;
